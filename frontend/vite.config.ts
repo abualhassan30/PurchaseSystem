@@ -33,4 +33,14 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    outDir: 'dist',
+    // Ensure _redirects file is copied to dist
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
+  publicDir: 'public',
 })
