@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from '@/i18n/config'
 import api from '@/lib/api'
-import { getLocalizedName } from '@/lib/i18n-utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,7 +20,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { toast } from '@/components/ui/toaster'
-import { SearchableSelect } from '@/components/ui/searchable-select'
 import { Plus, Edit, Trash2, Search } from 'lucide-react'
 
 interface Branch {

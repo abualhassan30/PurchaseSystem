@@ -58,7 +58,6 @@ interface InventoryCount {
 
 export default function InventoryCounts() {
   const { t } = useTranslation()
-  const { user } = useAuth()
   const isArabic = i18n.language === 'ar'
   const [inventoryCounts, setInventoryCounts] = useState<InventoryCount[]>([])
   const [items, setItems] = useState<any[]>([])
@@ -876,7 +875,7 @@ export default function InventoryCounts() {
       document.body.appendChild(pdfContent)
 
       const opt = {
-        margin: [10, 10, 10, 10],
+        margin: [10, 10, 10, 10] as [number, number, number, number],
         filename: `InventoryCount_${viewingCount.inventoryNumber}_${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, letterRendering: true, allowTaint: true, backgroundColor: '#ffffff', windowWidth: 1200, windowHeight: 1600 },

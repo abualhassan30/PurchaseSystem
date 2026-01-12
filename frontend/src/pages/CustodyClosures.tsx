@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/table'
 import { toast } from '@/components/ui/toaster'
 import { SearchableSelect } from '@/components/ui/searchable-select'
-import { Plus, Trash2, Printer, Download, Eye, Edit, X, Search, Upload, File } from 'lucide-react'
+import { Plus, Trash2, Printer, Download, Eye, Edit, X, Search, File } from 'lucide-react'
 
 interface CustodyClosureInvoice {
   id?: number
@@ -212,7 +212,7 @@ export default function CustodyClosures() {
         invoice.tax = (invoice.amountAfterDiscount * taxRate) / 100
         invoice.total = invoice.amountAfterDiscount + invoice.tax
       } else {
-        invoice[field] = value
+        (invoice as any)[field] = value
       }
 
       newInvoices[index] = invoice
@@ -927,7 +927,6 @@ export default function CustodyClosures() {
                   <div className="w-full h-[calc(90vh-120px)] border rounded">
                     <iframe
                       src={previewAttachment.url}
-                      type="application/pdf"
                       className="w-full h-full"
                       title={previewAttachment.fileName}
                       style={{ minHeight: '600px' }}
@@ -1337,7 +1336,6 @@ export default function CustodyClosures() {
                   <div className="w-full h-[calc(90vh-120px)] border rounded">
                     <iframe
                       src={previewAttachment.url}
-                      type="application/pdf"
                       className="w-full h-full"
                       title={previewAttachment.fileName}
                       style={{ minHeight: '600px' }}

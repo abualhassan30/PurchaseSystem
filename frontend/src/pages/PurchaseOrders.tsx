@@ -11,7 +11,6 @@ import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -273,7 +272,7 @@ export default function PurchaseOrders() {
     setDeletingOrderId(null)
   }
 
-  const handleUpdateStatus = async (id: number, status: string) => {
+  const _handleUpdateStatus = async (id: number, status: string) => {
     try {
       await api.patch(`/purchase-orders/${id}/status`, { status })
       toast({
@@ -453,7 +452,7 @@ export default function PurchaseOrders() {
       document.body.appendChild(pdfContent)
 
       const opt = {
-        margin: [10, 10, 10, 10],
+        margin: [10, 10, 10, 10] as [number, number, number, number],
         filename: `PO_${orderDetails.orderNumber}_${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
@@ -705,7 +704,7 @@ export default function PurchaseOrders() {
     setFormData({ ...formData, items: updatedItems, total: newTotal })
   }
 
-  const calculateTotal = () => {
+  const _calculateTotal = () => {
     const total = formData.items.reduce((sum, item) => {
       const lineTotal = typeof item.lineTotal === 'number' ? item.lineTotal : parseFloat(String(item.lineTotal || '0')) || 0
       return sum + lineTotal
@@ -943,7 +942,7 @@ export default function PurchaseOrders() {
 
       // Configure html2pdf options
       const opt = {
-        margin: [10, 10, 10, 10],
+        margin: [10, 10, 10, 10] as [number, number, number, number],
         filename: formData.orderNumber 
           ? `PO_${formData.orderNumber}_${new Date().toISOString().split('T')[0]}.pdf`
           : `Purchase_Order_${new Date().toISOString().split('T')[0]}.pdf`,

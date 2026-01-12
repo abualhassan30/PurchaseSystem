@@ -51,7 +51,7 @@ const HighlightText = ({ text, searchTerm, dir }: { text: string; searchTerm: st
 }
 
 export const SearchableSelect = React.forwardRef<HTMLDivElement, SearchableSelectProps>(
-  ({ options, value, onChange, placeholder = 'Select...', required = false, dir = 'ltr', className, disabled = false, onSelect, showLoading = false }, ref) => {
+  ({ options, value, onChange, placeholder = 'Select...', dir = 'ltr', className, disabled = false, onSelect, showLoading = false }) => {
     const { t } = useTranslation()
     const [isOpen, setIsOpen] = React.useState(false)
     const [searchTerm, setSearchTerm] = React.useState('')

@@ -411,15 +411,17 @@ export default function Units() {
                           <div>
                             <div className="font-medium">
                               {(() => {
-                                const baseUnit = units.find((u) => u.id === unit.baseUnitId) || {}
-                                return getLocalizedName(baseUnit) || baseUnit.nameAr || baseUnit.nameEn || baseUnit.name || '-'
+                                const baseUnit = units.find((u) => u.id === unit.baseUnitId)
+                                if (!baseUnit) return '-'
+                                return getLocalizedName(baseUnit) || baseUnit.nameAr || baseUnit.nameEn || (baseUnit as any).name || '-'
                               })()}
                             </div>
                             <div className="text-xs text-gray-500">
                               {`${unit.conversionFactor} ${unitName} = 1 ${
                                 (() => {
-                                  const baseUnit = units.find((u) => u.id === unit.baseUnitId) || {}
-                                  return getLocalizedName(baseUnit) || baseUnit.nameAr || baseUnit.nameEn || baseUnit.name || ''
+                                  const baseUnit = units.find((u) => u.id === unit.baseUnitId)
+                                  if (!baseUnit) return ''
+                                  return getLocalizedName(baseUnit) || baseUnit.nameAr || baseUnit.nameEn || (baseUnit as any).name || ''
                                 })()
                               }`}
                             </div>
