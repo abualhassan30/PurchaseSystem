@@ -278,18 +278,18 @@ export default function PurchaseOrders() {
   //     await api.patch(`/purchase-orders/${id}/status`, { status })
   //     toast({
   //       title: t('common.success'),
-        description: t('purchaseOrders.orderUpdated'),
-      })
-      loadOrders()
-    } catch (error: any) {
-      console.error('Error updating status:', error)
-      toast({
-        title: 'Error',
-        description: error.response?.data?.message || 'Failed to update status',
-        variant: 'destructive',
-      })
-    }
-  }
+  //       description: t('purchaseOrders.orderUpdated'),
+  //     })
+  //     loadOrders()
+  //   } catch (error: any) {
+  //     console.error('Error updating status:', error)
+  //     toast({
+  //       title: 'Error',
+  //       description: error.response?.data?.message || 'Failed to update status',
+  //       variant: 'destructive',
+  //     })
+  //   }
+  // }
 
   const handlePrintOrder = async (order: PurchaseOrder) => {
     const orderDetails = await loadOrderDetails(order.id!)
