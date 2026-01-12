@@ -272,11 +272,12 @@ export default function PurchaseOrders() {
     setDeletingOrderId(null)
   }
 
-  const _handleUpdateStatus = async (id: number, status: string) => {
-    try {
-      await api.patch(`/purchase-orders/${id}/status`, { status })
-      toast({
-        title: t('common.success'),
+  // Unused function - kept for potential future use
+  // const _handleUpdateStatus = async (id: number, status: string) => {
+  //   try {
+  //     await api.patch(`/purchase-orders/${id}/status`, { status })
+  //     toast({
+  //       title: t('common.success'),
         description: t('purchaseOrders.orderUpdated'),
       })
       loadOrders()
@@ -454,7 +455,7 @@ export default function PurchaseOrders() {
       const opt = {
         margin: [10, 10, 10, 10] as [number, number, number, number],
         filename: `PO_${orderDetails.orderNumber}_${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { 
           scale: 2,
           useCORS: true,
@@ -704,13 +705,14 @@ export default function PurchaseOrders() {
     setFormData({ ...formData, items: updatedItems, total: newTotal })
   }
 
-  const _calculateTotal = () => {
-    const total = formData.items.reduce((sum, item) => {
-      const lineTotal = typeof item.lineTotal === 'number' ? item.lineTotal : parseFloat(String(item.lineTotal || '0')) || 0
-      return sum + lineTotal
-    }, 0)
-    setFormData({ ...formData, total })
-  }
+  // Unused function - kept for potential future use
+  // const _calculateTotal = () => {
+  //   const total = formData.items.reduce((sum, item) => {
+  //     const lineTotal = typeof item.lineTotal === 'number' ? item.lineTotal : parseFloat(String(item.lineTotal || '0')) || 0
+  //     return sum + lineTotal
+  //   }, 0)
+  //   setFormData({ ...formData, total })
+  // }
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -946,7 +948,7 @@ export default function PurchaseOrders() {
         filename: formData.orderNumber 
           ? `PO_${formData.orderNumber}_${new Date().toISOString().split('T')[0]}.pdf`
           : `Purchase_Order_${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { 
           scale: 2,
           useCORS: true,
