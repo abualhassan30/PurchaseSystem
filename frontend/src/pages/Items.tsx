@@ -21,7 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { toast } from '@/components/ui/toaster'
-import { Plus, Edit, Trash2, Search, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, Download, Upload, FileSpreadsheet, X } from 'lucide-react'
 import * as XLSX from 'xlsx'
 
 interface Item {
@@ -55,6 +55,11 @@ export default function Items() {
     price: 0,
     categoryId: 0,
   })
+  const [showUploadResults, setShowUploadResults] = useState(false)
+  const [uploadResults, setUploadResults] = useState<{
+    successful: Array<{ row: number; code: string; name: string }>
+    failed: Array<{ row: number; code: string; name: string; errors: string[] }>
+  } | null>(null)
 
   useEffect(() => {
     loadItems()
@@ -173,6 +178,86 @@ export default function Items() {
       itemName.includes(searchLower)
     )
   })
+
+  // Download Excel template
+  const handleDownloadTemplate = async () => {
+    try {
+      const res = await api.get('/items/template', {
+        responseType: 'blob',
+      })
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'items_template.xlsx')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      toast({
+        title: t('common.success'),
+        description: t('items.templateDownloaded'),
+      })
+    } catch (error: any) {
+      console.error('Failed to download template:', error)
+      toast({
+        title: t('common.error'),
+        description: error.response?.data?.message || t('items.templateDownloadError'),
+        variant: 'destructive',
+      })
+    }
+  }
+
+  // Handle bulk upload
+  const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.name.match(/\.(xlsx|xls)$/i)) {
+      toast({
+        title: t('common.error'),
+        description: t('items.invalidFileType'),
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      setLoading(true)
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await api.post('/items/bulk-upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      setUploadResults(res.data.results)
+      setShowUploadResults(true)
+      
+      toast({
+        title: t('common.success'),
+        description: res.data.message,
+      })
+
+      // Reload items
+      loadItems()
+
+      // Reset file input
+      e.target.value = ''
+    } catch (error: any) {
+      console.error('Bulk upload error:', error)
+      toast({
+        title: t('common.error'),
+        description: error.response?.data?.message || t('items.uploadError'),
+        variant: 'destructive',
+      })
+      e.target.value = ''
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Export to Excel
   const handleExportExcel = () => {
@@ -360,14 +445,42 @@ export default function Items() {
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>{t('items.title')}</CardTitle>
-            <Button
-              variant="outline"
-              onClick={handleExportExcel}
-              disabled={filteredItems.length === 0}
-            >
-              <Download className="w-4 h-4 me-2" />
-              {t('items.exportExcel')}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={handleDownloadTemplate}
+              >
+                <FileSpreadsheet className="w-4 h-4 me-2" />
+                {t('items.downloadTemplate')}
+              </Button>
+              <label>
+                <input
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={handleBulkUpload}
+                  style={{ display: 'none' }}
+                  disabled={loading}
+                  id="bulk-upload-input"
+                />
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={loading}
+                  onClick={() => document.getElementById('bulk-upload-input')?.click()}
+                >
+                  <Upload className="w-4 h-4 me-2" />
+                  {t('items.bulkUpload')}
+                </Button>
+              </label>
+              <Button
+                variant="outline"
+                onClick={handleExportExcel}
+                disabled={filteredItems.length === 0}
+              >
+                <Download className="w-4 h-4 me-2" />
+                {t('items.exportExcel')}
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -441,6 +554,112 @@ export default function Items() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Upload Results Modal */}
+      {showUploadResults && uploadResults && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardTitle>{t('items.uploadResults')}</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setShowUploadResults(false)
+                  setUploadResults(null)
+                }}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="overflow-y-auto flex-1">
+              <div className="space-y-4">
+                {/* Summary */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-700">
+                      {uploadResults.successful.length}
+                    </div>
+                    <div className="text-sm text-green-600">{t('items.successfulImports')}</div>
+                  </div>
+                  <div className="p-4 bg-red-50 rounded-lg">
+                    <div className="text-2xl font-bold text-red-700">
+                      {uploadResults.failed.length}
+                    </div>
+                    <div className="text-sm text-red-600">{t('items.failedImports')}</div>
+                  </div>
+                </div>
+
+                {/* Successful Items */}
+                {uploadResults.successful.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-green-700 mb-2">
+                      {t('items.successfulItems')} ({uploadResults.successful.length})
+                    </h3>
+                    <div className="border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>{t('items.row')}</TableHead>
+                            <TableHead>{t('items.itemCode')}</TableHead>
+                            <TableHead>{t('items.itemName')}</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {uploadResults.successful.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{item.row}</TableCell>
+                              <TableCell>{item.code}</TableCell>
+                              <TableCell>{item.name}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Failed Items */}
+                {uploadResults.failed.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-red-700 mb-2">
+                      {t('items.failedItems')} ({uploadResults.failed.length})
+                    </h3>
+                    <div className="border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>{t('items.row')}</TableHead>
+                            <TableHead>{t('items.itemCode')}</TableHead>
+                            <TableHead>{t('items.itemName')}</TableHead>
+                            <TableHead>{t('items.errors')}</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {uploadResults.failed.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{item.row}</TableCell>
+                              <TableCell>{item.code}</TableCell>
+                              <TableCell>{item.name}</TableCell>
+                              <TableCell>
+                                <ul className="list-disc list-inside text-sm text-red-600">
+                                  {item.errors.map((error, errIndex) => (
+                                    <li key={errIndex}>{error}</li>
+                                  ))}
+                                </ul>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

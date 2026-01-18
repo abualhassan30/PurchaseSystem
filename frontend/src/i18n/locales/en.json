@@ -135,7 +135,20 @@
     "searchItems": "Search by item code or name...",
     "exportExcel": "Export to Excel",
     "noItems": "No items found",
-    "noItemsFound": "No items match your search"
+    "noItemsFound": "No items match your search",
+    "downloadTemplate": "Download Template",
+    "bulkUpload": "Bulk Upload",
+    "templateDownloaded": "Template downloaded successfully",
+    "templateDownloadError": "Failed to download template",
+    "invalidFileType": "Invalid file type. Please upload an Excel file (.xlsx or .xls)",
+    "uploadError": "Failed to upload items",
+    "uploadResults": "Upload Results",
+    "successfulImports": "Successful Imports",
+    "failedImports": "Failed Imports",
+    "successfulItems": "Successfully Imported Items",
+    "failedItems": "Failed Items",
+    "row": "Row",
+    "errors": "Errors"
   },
   "units": {
     "title": "Units",

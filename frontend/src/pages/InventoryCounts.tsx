@@ -4,7 +4,6 @@ import i18n from '@/i18n/config'
 import { formatNumber, formatDate as formatDateUtil } from '@/lib/format'
 import { getLocalizedName } from '@/lib/i18n-utils'
 import api from '@/lib/api'
-import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -877,7 +876,7 @@ export default function InventoryCounts() {
       const opt = {
         margin: [10, 10, 10, 10] as [number, number, number, number],
         filename: `InventoryCount_${viewingCount.inventoryNumber}_${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, letterRendering: true, allowTaint: true, backgroundColor: '#ffffff', windowWidth: 1200, windowHeight: 1600 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       }

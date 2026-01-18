@@ -135,7 +135,20 @@
     "searchItems": "البحث بالكود أو الاسم...",
     "exportExcel": "تصدير إلى Excel",
     "noItems": "لا توجد أصناف",
-    "noItemsFound": "لا توجد أصناف تطابق البحث"
+    "noItemsFound": "لا توجد أصناف تطابق البحث",
+    "downloadTemplate": "تحميل القالب",
+    "bulkUpload": "رفع مجمع",
+    "templateDownloaded": "تم تحميل القالب بنجاح",
+    "templateDownloadError": "فشل تحميل القالب",
+    "invalidFileType": "نوع ملف غير صحيح. يرجى رفع ملف Excel (.xlsx أو .xls)",
+    "uploadError": "فشل رفع الأصناف",
+    "uploadResults": "نتائج الرفع",
+    "successfulImports": "الاستيراد الناجح",
+    "failedImports": "الاستيراد الفاشل",
+    "successfulItems": "الأصناف المستوردة بنجاح",
+    "failedItems": "الأصناف الفاشلة",
+    "row": "الصف",
+    "errors": "الأخطاء"
   },
   "units": {
     "title": "الوحدات",
